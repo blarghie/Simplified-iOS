@@ -407,6 +407,7 @@ static NSString *const RecordsKey = @"records";
     if (errorDict == nil) {
       [self save];
     } else {
+        // localization?
       UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SyncFailed"
                                                         message:@"We found a problem. Please check your connection or close and reopen the app to retry."];
       [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
@@ -591,12 +592,8 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
         return NSOrderedAscending;
       return NSOrderedSame;
     }];
-
-    if (sortedArray) {
-      return sortedArray;
-    } else {
-      return [NSArray array];
-    }
+      
+      return sortedArray ?: [NSArray array];
   }
 }
   

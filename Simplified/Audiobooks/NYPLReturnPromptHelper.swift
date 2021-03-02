@@ -7,6 +7,7 @@
 
   class func audiobookPrompt(completion:@escaping (_ returnWasChosen:Bool)->()) -> UIAlertController
   {
+    // localization??
     let title = NSLocalizedString("Your Audiobook Has Finished", comment: "")
     let message = NSLocalizedString("Would you like to return it?", comment: "")
     let alert = UIAlertController.init(title: title, message: message, preferredStyle: .alert)

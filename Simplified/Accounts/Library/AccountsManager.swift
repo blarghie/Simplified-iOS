@@ -50,11 +50,13 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     accountSetsWorkQueue.sync {
       accounts = accountSets[accountSet]
     }
+    
+    return !(accounts?.isEmpty ?? true)
 
-    if let accounts = accounts {
-      return !accounts.isEmpty
-    }
-    return false
+//    if let accounts = accounts {
+//      return !accounts.isEmpty
+//    }
+//    return false
   }
 
   private var loadingCompletionHandlers = [String: [(Bool) -> ()]]()
@@ -283,20 +285,29 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
     }
 
     // Check primary account set first
-    if let accounts = accountSetsCopy[accountSetKey] {
-      if let account = accounts.filter({ $0.uuid == uuid }).first {
+//    if let accounts = accountSetsCopy[accountSetKey] {
+//      if let account = accounts.filter({ $0.uuid == uuid }).first {
+//        return account
+//      }
+//    }
+    if let accounts = accountSetsCopy[accountSetKey],
+        let account = accounts.first(where: { $0.uuid == uuid }) {
         return account
-      }
     }
 
     // Check existing account lists
-    for accountEntry in accountSetsCopy {
-      if accountEntry.key == accountSetKey {
-        continue
-      }
-      if let account = accountEntry.value.filter({ $0.uuid == uuid }).first {
-        return account
-      }
+//    for accountEntry in accountSetsCopy {
+//      if accountEntry.key == accountSetKey {
+//        continue
+//      }
+//      if let account = accountEntry.value.filter({ $0.uuid == uuid }).first {
+//        return account
+//      }
+//    }
+    for accountEntry in accountSetsCopy where accountEntry.key != accountSetKey {
+        if let account = accountEntry.value.first(where: { $0.uuid == uuid }) {
+            return account
+        }
     }
 
     return nil
@@ -338,20 +349,29 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
       let authDocCaches = appSupportDirContents.filter { (url) -> Bool in
         return url.lastPathComponent.starts(with: "authentication_document_") && url.pathExtension == "json"
       }
-      for cache in libraryListCaches {
-        do {
-          try FileManager.default.removeItem(at: cache)
-        } catch {
-          Log.error("ClearCache", "Unable to clear cache for: \(cache)")
+        
+        let allCaches = libraryListCaches + authDocCaches
+        for cache in allCaches {
+            do {
+              try FileManager.default.removeItem(at: cache)
+            } catch {
+              Log.error("ClearCache", "Unable to clear cache for: \(cache)")
+            }
         }
-      }
-      for cache in authDocCaches {
-        do {
-          try FileManager.default.removeItem(at: cache)
-        } catch {
-          Log.error("ClearCache", "Unable to clear cache for: \(cache)")
-        }
-      }
+//      for cache in libraryListCaches {
+//        do {
+//          try FileManager.default.removeItem(at: cache)
+//        } catch {
+//          Log.error("ClearCache", "Unable to clear cache for: \(cache)")
+//        }
+//      }
+//      for cache in authDocCaches {
+//        do {
+//          try FileManager.default.removeItem(at: cache)
+//        } catch {
+//          Log.error("ClearCache", "Unable to clear cache for: \(cache)")
+//        }
+//      }
     } catch {
       Log.error("ClearCache", "Unable to clear cache")
     }

@@ -29,6 +29,7 @@ class OPDS2SamlIDP: NSObject, Codable {
 // MARK: AccountDetails
 // Extra data that gets loaded from an OPDS2AuthenticationDocument,
 @objcMembers final class AccountDetails: NSObject {
+    // Suggestion - These values are hard coded. If we put them as userDefinedSettings in BuildSettings, we can have different keys for debug and release builds.
   enum AuthType: String, Codable {
     case basic = "http://opds-spec.org/auth/basic"
     case coppa = "http://librarysimplified.org/terms/authentication/gate/coppa" //used for Simplified collection
@@ -97,7 +98,9 @@ class OPDS2SamlIDP: NSObject, Codable {
     }
 
     var needsAuth:Bool {
-      return authType == .basic || authType == .oauthIntermediary || authType == .saml
+        // looks more elegant
+        return [.basic, .oauthIntermediary, .saml].contains(authType)
+//      return authType == .basic || authType == .oauthIntermediary || authType == .saml
     }
 
     var needsAgeCheck:Bool {
@@ -122,7 +125,8 @@ class OPDS2SamlIDP: NSObject, Codable {
 
     var catalogRequiresAuthentication: Bool {
       // you need an oauth token in order to access catalogs if authentication type is either oauth with intermediary (ex. Clever), or SAML
-      return authType == .oauthIntermediary || authType == .saml
+        return [.oauthIntermediary, .saml].contains(authType)
+//      return authType == .oauthIntermediary || authType == .saml
     }
 
     func encode(with coder: NSCoder) {
@@ -169,7 +173,9 @@ class OPDS2SamlIDP: NSObject, Codable {
   }
   var needsAgeCheck: Bool {
     // this will tell if any authentication method requires age check
-    return auths.reduce(false) { $0 || $1.needsAgeCheck }
+//    return auths.reduce(false) { $0 || $1.needsAgeCheck }
+    // No need to reduce here.
+    return auths.contains(where: { $0.needsAgeCheck })
   }
 
   fileprivate var urlAnnotations:URL?
@@ -180,8 +186,10 @@ class OPDS2SamlIDP: NSObject, Codable {
   
   var eulaIsAccepted:Bool {
     get {
-      guard let result = getAccountDictionaryKey(NYPLSettings.userHasAcceptedEULAKey) else { return false }
-      return result as! Bool
+//      guard let result = getAccountDictionaryKey(NYPLSettings.userHasAcceptedEULAKey) else { return false }
+//      return result as! Bool
+        return getAccountDictionaryKey(NYPLSettings.userHasAcceptedEULAKey) as? Bool ?? false
+
     }
     set {
       setAccountDictionaryKey(NYPLSettings.userHasAcceptedEULAKey,
@@ -190,8 +198,9 @@ class OPDS2SamlIDP: NSObject, Codable {
   }
   var syncPermissionGranted:Bool {
     get {
-      guard let result = getAccountDictionaryKey(accountSyncEnabledKey) else { return false }
-      return result as! Bool
+        return getAccountDictionaryKey(accountSyncEnabledKey) as? Bool ?? false
+//      guard let result = getAccountDictionaryKey(accountSyncEnabledKey) else { return false }
+//      return result as! Bool
     }
     set {
       setAccountDictionaryKey(accountSyncEnabledKey, toValue: newValue as AnyObject)
@@ -199,8 +208,9 @@ class OPDS2SamlIDP: NSObject, Codable {
   }
   var userAboveAgeLimit:Bool {
     get {
-      guard let result = getAccountDictionaryKey(userAboveAgeKey) else { return false }
-      return result as! Bool
+        return getAccountDictionaryKey(userAboveAgeKey) as? Bool ?? false
+//      guard let result = getAccountDictionaryKey(userAboveAgeKey) else { return false }
+//      return result as! Bool
     }
     set {
       setAccountDictionaryKey(userAboveAgeKey, toValue: newValue as AnyObject)
@@ -221,6 +231,7 @@ class OPDS2SamlIDP: NSObject, Codable {
 //      return Authentication.init(auth: opdsAuth)
 //    }).filter { $0.authType != .oauthIntermediary } ?? []
 
+    // Should we store these somewhere?
     supportsReservations = authenticationDocument.features?.disabled?.contains("https://librarysimplified.org/rel/policy/reservations") != true
     userProfileUrl = authenticationDocument.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/user-profile" })?.href
     loansUrl = URL.init(string: authenticationDocument.links?.first(where: { $0.rel == "http://opds-spec.org/shelf" })?.href ?? "")

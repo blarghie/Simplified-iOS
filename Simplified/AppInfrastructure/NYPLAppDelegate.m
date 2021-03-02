@@ -127,6 +127,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
   
   NYPLBook *book = [NYPLBook bookWithEntry:entry];
   if (!book) {
+      // Localization???
     NSString *alertTitle = @"Error Opening Link";
     NSString *alertMessage = @"There was an error opening the linked book.";
     UIAlertController *alert = [NYPLAlertUtils alertWithTitle:alertTitle message:alertMessage];

@@ -341,6 +341,8 @@ static NSString *const UpdatedKey = @"updated";
 
     NSString *const genericString = NYPLNullToNil(dictionary[DeprecatedAcquisitionKey][@"generic"]);
     NSURL *const genericURL = genericString ? [NSURL URLWithString:genericString] : nil;
+      
+      // We should create a method that returns NYPLOPDSAcquisition object from NYPLOPDSAcquisitionRelation and NSURL object? Far less code and easier on the eyes.
     if (genericURL) {
       [mutableAcquisitions addObject:
        [NYPLOPDSAcquisition
@@ -407,13 +409,13 @@ static NSString *const UpdatedKey = @"updated";
     for (int i = 0; i < (int)authorStrings.count; i++) {
       if ((int)authorLinks.count > i) {
         NSURL *url = [NSURL URLWithString:authorLinks[i]];
-        if (url) {
+//        if (url) {
           [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
                                                         relatedBooksURL:url]];
-        } else {
-          [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
-                                                        relatedBooksURL:nil]];
-        }
+//        } else {
+//          [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
+//                                                        relatedBooksURL:nil]];
+//        }
       } else {
         [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
                                                       relatedBooksURL:nil]];

@@ -51,6 +51,8 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
   NYPLBookState const state = [[NYPLBookRegistry sharedRegistry]
                                stateForIdentifier:book.identifier];
   
+    // So much repetition here. Needs fixing.
+    
   switch(state) {
     case NYPLBookStateUnregistered:
     {

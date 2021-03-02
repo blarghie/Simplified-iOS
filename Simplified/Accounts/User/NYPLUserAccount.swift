@@ -70,13 +70,23 @@ private enum StorageKey: String {
 
   var authDefinition: AccountDetails.Authentication? {
     get {
-      let legacyDefinition: AccountDetails.Authentication?
-      if let libraryUUID = self.libraryUUID {
-        legacyDefinition = AccountsManager.shared.account(libraryUUID)?.details?.auths.first
-      } else {
-        legacyDefinition = AccountsManager.shared.currentAccount?.details?.auths.first
-      }
-      return _authDefinition.read() ?? legacyDefinition
+//      let legacyDefinition: AccountDetails.Authentication?
+//      if let libraryUUID = self.libraryUUID {
+//        legacyDefinition = AccountsManager.shared.account(libraryUUID)?.details?.auths.first
+//      } else {
+//        legacyDefinition = AccountsManager.shared.currentAccount?.details?.auths.first
+//      }
+//      return _authDefinition.read() ?? legacyDefinition
+        
+        // We don't need to define legacyDefinition here unless _authDefinition.read() is nil.
+        guard let read = _authDefinition.read() else {
+            if let libraryUUID = self.libraryUUID {
+                return AccountsManager.shared.account(libraryUUID)?.details?.auths.first
+            }
+            
+            return AccountsManager.shared.currentAccount?.details?.auths.first
+        }
+        return read
     }
     set {
       guard let newValue = newValue else { return }
@@ -232,17 +242,21 @@ private enum StorageKey: String {
   func hasBarcodeAndPIN() -> Bool {
     if let credentials = credentials, case NYPLCredentials.barcodeAndPin = credentials {
       return true
-    } else {
-      return false
+//    } else {
+//      return false
+//    }
     }
+    return false
   }
   
   func hasAuthToken() -> Bool {
     if let credentials = credentials, case NYPLCredentials.token = credentials {
       return true
-    } else {
-      return false
+//    } else {
+//      return false
+//    }
     }
+    return false
   }
   
   func hasAdobeToken() -> Bool {
@@ -254,7 +268,10 @@ private enum StorageKey: String {
   }
   
   func hasCredentials() -> Bool {
-    return hasAuthToken() || hasBarcodeAndPIN()
+    
+//    return hasAuthToken() || hasBarcodeAndPIN()
+    // It's fine like this but if we are to add more cases, this would be a more elegant solution
+    return [hasAuthToken(), hasBarcodeAndPIN()].contains(true)
   }
 
   // Oauth requires login to load catalog
@@ -282,9 +299,11 @@ private enum StorageKey: String {
   var barcode: String? {
     if let credentials = credentials, case let NYPLCredentials.barcodeAndPin(barcode: barcode, pin: _) = credentials {
       return barcode
-    } else {
-      return nil
+//    } else {
+//      return nil
+//    }
     }
+    return nil
   }
 
   /// For any library but the NYPL, this identifier can be anything they want.
@@ -305,9 +324,11 @@ private enum StorageKey: String {
   var PIN: String? {
     if let credentials = credentials, case let NYPLCredentials.barcodeAndPin(barcode: _, pin: pin) = credentials {
       return pin
-    } else {
-      return nil
+//    } else {
+//      return nil
+//    }
     }
+    return nil
   }
 
   var needsAuth:Bool {
@@ -316,8 +337,9 @@ private enum StorageKey: String {
   }
 
   var needsAgeCheck:Bool {
-    let authType = authDefinition?.authType ?? .none
-    return authType == .coppa
+//    let authType = authDefinition?.authType ?? .none
+//    return authType == .coppa
+    return authDefinition?.authType == .coppa
   }
 
   var deviceID: String? { _deviceID.read() }
@@ -333,9 +355,11 @@ private enum StorageKey: String {
   var authToken: String? {
     if let credentials = credentials, case let NYPLCredentials.token(authToken: token) = credentials {
       return token
-    } else {
-      return nil
+//    } else {
+//      return nil
+//    }
     }
+    return nil
   }
 
   var patronFullName: String? {
@@ -453,6 +477,7 @@ private enum StorageKey: String {
   // MARK: - Remove
 
   func removeAll() {
+    // missed writing nil to _licensor????
     keychainTransaction.perform {
       _adobeToken.write(nil)
       _patron.write(nil)
@@ -460,6 +485,7 @@ private enum StorageKey: String {
       _provider.write(nil)
       _userID.write(nil)
       _deviceID.write(nil)
+        
 
       keychainTransaction.perform {
         _authDefinition.write(nil)

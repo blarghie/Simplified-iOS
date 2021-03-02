@@ -46,13 +46,16 @@ import Foundation
       self.isPresenting = true
       self.presentAgeVerificationView { over13 in
         NYPLSettings.shared.userPresentedAgeCheck = true
-        if (over13) {
-          accountDetails.userAboveAgeLimit = true
-          completion?(true)
-        } else {
-          accountDetails.userAboveAgeLimit = false
-          completion?(false)
-        }
+//        if (over13) {
+//          accountDetails.userAboveAgeLimit = true
+//          completion?(true)
+//        } else {
+//          accountDetails.userAboveAgeLimit = false
+//          completion?(false)
+//        }
+        
+        accountDetails.userAboveAgeLimit = over13
+        completion?(over13)
 
         self.isPresenting = false
         
@@ -71,6 +74,7 @@ import Foundation
   {
     DispatchQueue.main.async {
       let alertCont = UIAlertController.init(
+        // Not localizing strings?
         title: NSLocalizedString("Age Verification", comment: "An alert title indicating the user needs to verify their age"),
         message: NSLocalizedString("You must be 13 years of age or older to download some of the books from this collection. How old are you?", comment: "An alert message telling the user they must be at least 13 years old and asking how old they are"),
         preferredStyle: .alert

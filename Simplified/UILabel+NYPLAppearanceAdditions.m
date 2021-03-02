@@ -20,6 +20,7 @@
   UIFont *currentFont = self.font;
   CGFloat fontSize = currentFont.pointSize;
   UIFont *newFont = [UIFont fontWithName:fontName size:fontSize];
+    // Shouldn't we return FALSE if no font with given name exists?
   self.font = newFont;
 }
 
