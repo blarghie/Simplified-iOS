@@ -65,6 +65,7 @@ import Foundation
   }
   
   func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    // localization??
     switch section {
     case 0:
       return "Library Settings"

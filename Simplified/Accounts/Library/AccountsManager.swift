@@ -16,6 +16,14 @@ let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 /// Initialized with JSON.
 @objcMembers final class AccountsManager: NSObject, NYPLLibraryAccountsProvider
 {
+    // should we convert this to a struct?
+    /*
+    struct NYPLAccountUUIDs {
+        static let nyplProper = "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949"
+        static let brooklyn = "urn:uuid:edef2358-9f6a-4ce6-b64f-9b351ec68ac4"
+        static let simpliefiedInstantClassic = "urn:uuid:56906f26-2c9a-4ae9-bd02-552557720b99"
+    }
+ */
   static let NYPLAccountUUIDs = [
     "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949", //NYPL proper
     "urn:uuid:edef2358-9f6a-4ce6-b64f-9b351ec68ac4", //Brooklyn

@@ -461,6 +461,8 @@ viewForHeaderInSection:(NSInteger const)section
                              }];
   }
 
+// Shouldn't we be presenting some sort of error message here if urlToLoad is nil?
+    // The user will be taken to a blank page which might be confusing.
   UIViewController *const viewController = [[NYPLCatalogFeedViewController alloc]
                                             initWithURL:urlToLoad];
   

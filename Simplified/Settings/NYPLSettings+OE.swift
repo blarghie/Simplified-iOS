@@ -31,6 +31,7 @@ extension NYPLSettings {
     }
     set(newAccountsList) {
       UserDefaults.standard.set(newAccountsList, forKey: NYPLSettings.settingsLibraryAccountsKey)
+        // synchronize() is deprecated
       UserDefaults.standard.synchronize()
     }
   }

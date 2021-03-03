@@ -42,6 +42,7 @@ import Foundation
         return
       }
       UserDefaults.standard.set(customUrl, forKey: NYPLSettings.customMainFeedURLKey)
+        // synchronize() is deprecated
       UserDefaults.standard.synchronize()
       NotificationCenter.default.post(name: Notification.Name.NYPLSettingsDidChange, object: self)
     }
@@ -56,6 +57,7 @@ import Foundation
         return
       }
       UserDefaults.standard.set(mainFeedUrl, forKey: NYPLSettings.accountMainFeedURLKey)
+        // synchronize() is deprecated
       UserDefaults.standard.synchronize()
       NotificationCenter.default.post(name: Notification.Name.NYPLSettingsDidChange, object: self)
     }
@@ -68,6 +70,7 @@ import Foundation
     }
     set(b) {
       UserDefaults.standard.set(b, forKey: NYPLSettings.userHasSeenWelcomeScreenKey)
+        // synchronize() is deprecated
       UserDefaults.standard.synchronize()
     }
   }
@@ -78,6 +81,7 @@ import Foundation
     }
     set(b) {
       UserDefaults.standard.set(b, forKey: NYPLSettings.userPresentedAgeCheckKey)
+        // synchronize() is deprecated
       UserDefaults.standard.synchronize()
     }
   }

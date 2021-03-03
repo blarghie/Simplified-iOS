@@ -112,7 +112,7 @@ class LCPAuthenticationViewController: UIViewController {
     guard !licenseInfo.supportLinks.isEmpty else {
       return
     }
-    
+    // This kinda feels weird
     func open(_ url: URL) {
         UIApplication.shared.open(url)
     }

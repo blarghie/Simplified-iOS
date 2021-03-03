@@ -187,7 +187,7 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
     // load customized request
     webView.load(mutableRequest)
   }
-
+// this should be up top with other variables
   private var wasBookFound = false
   func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
 

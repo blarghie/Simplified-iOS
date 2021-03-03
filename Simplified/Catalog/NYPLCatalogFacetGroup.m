@@ -28,7 +28,7 @@
   }
   
   self.facets = facets;
-  
+  // shouldn't we check for this before we loop through facets?
   if(!name) {
     @throw NSInvalidArgumentException;
   }

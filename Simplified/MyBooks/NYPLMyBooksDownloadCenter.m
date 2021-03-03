@@ -888,21 +888,14 @@ didCompleteWithError:(NSError *)error
     case NYPLBookStateDownloading:
       // Ignore double button presses, et cetera.
       return;
-    case NYPLBookStateDownloadFailed:
-      break;
-    case NYPLBookStateDownloadNeeded:
-      break;
-    case NYPLBookStateHolding:
-      break;
-    case NYPLBookStateSAMLStarted:
-      break;
     case NYPLBookStateDownloadSuccessful:
-      // fallthrough
     case NYPLBookStateUsed:
       // fallthrough
     case NYPLBookStateUnsupported:
       NYPLLOG(@"Ignoring nonsensical download request.");
       return;
+    default:
+      break;
   }
   
   if([NYPLUserAccount sharedAccount].hasCredentials || !loginRequired) {

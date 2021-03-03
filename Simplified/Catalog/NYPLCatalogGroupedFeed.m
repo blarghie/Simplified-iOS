@@ -111,6 +111,7 @@
       continue;
     }
     
+      // This method should return the updated book
     [[NYPLBookRegistry sharedRegistry] updateBookMetadata:book];
     NYPLBook *updatedBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
     if(updatedBook) {

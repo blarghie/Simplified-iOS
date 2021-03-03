@@ -43,6 +43,7 @@ class NYPLWelcomeEULAViewController : UIViewController {
     self.webView.navigationDelegate = self
     self.view.addSubview(self.webView)
 
+    // We're defining rejectButton & acceptButton but not using them anywhere
     let rejectButton = UIButton.init(type: .system)
     rejectButton.titleLabel?.font = UIFont.systemFont(ofSize: 21)
     let rejectTitle = NSLocalizedString("Reject", comment: "Title for a Reject button")
@@ -154,7 +155,7 @@ extension NYPLWelcomeEULAViewController: WKNavigationDelegate {
                decidePolicyFor navigationResponse: WKNavigationResponse,
                decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
     if let response = navigationResponse.response as? HTTPURLResponse {
-      if response.statusCode < 200 || response.statusCode > 299 {
+      if !(200...299).contains(response.statusCode) {
         decisionHandler(.cancel)
         return
       }

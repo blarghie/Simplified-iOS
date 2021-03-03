@@ -39,12 +39,8 @@ extension HTTPURLResponse {
       }
     }
 
-    if lastModifiedHeader != nil && eTagHeader != nil {
-      return true
-    }
-
-    return false
-  }
+    return ![lastModifiedHeader, eTagHeader].contains(nil)
+}
 
   /**
    Extracts the value of the `max-age` directive from the `Cache-Control` header.
@@ -120,11 +116,7 @@ extension HTTPURLResponse {
       return value
     }
 
-    if let value = responseHeaders[header.lowercased()] as? String {
-      return value
-    }
-
-    return nil
+    return responseHeaders[header.lowercased()] as? String
   }
 
   /// Creates a new response by adding caching headers sufficient to avoid
@@ -134,10 +126,11 @@ extension HTTPURLResponse {
   /// that directive is present in `Cache-Control`, otherwise it's 3 hours.
   func modifyingCacheHeaders() -> HTTPURLResponse {
     // don't mess with failed responses
-    guard statusCode >= 200 && statusCode <= 299 else {
-      return self
+    
+    guard (200...299).contains(statusCode) else {
+        return self
     }
-
+    
     // convert existing headers into a [String: String] dictionary we can use
     // later
     let headerPairs: [(String, String)] = self.allHeaderFields.compactMap {
@@ -151,12 +144,7 @@ extension HTTPURLResponse {
     // use `max-age` value if present, otherwise use 3 hours for both
     // `max-age` and `Expires`.
     if self.expiresHeader == nil {
-      let maxAge: TimeInterval = {
-        if let age = self.cacheControlMaxAge {
-          return age
-        }
-        return 60 * 60 * 3
-      }()
+      let maxAge: TimeInterval = self.cacheControlMaxAge ?? 60 * 60 * 3
       let in3HoursDate = Date().addingTimeInterval(maxAge)
       headers["Expires"] = in3HoursDate.rfc1123String
     }
@@ -245,17 +233,16 @@ class NYPLCaching {
   private static let maxMemoryCapacity = 20 * 1024 * 1024 // 20 MB
   private static let maxDiskCapacity = 1024 * 1024 * 1024 // 1 GB
 
-  private class func makeCache() -> URLCache {
-    if #available(iOS 13.0, *) {
-      let cache = URLCache(memoryCapacity: maxMemoryCapacity,
-                           diskCapacity: maxDiskCapacity,
-                           directory: nil)
-      return cache
-    } else {
-      let cache = URLCache(memoryCapacity: maxMemoryCapacity,
-                           diskCapacity: maxDiskCapacity,
-                           diskPath: nil)
-      return cache
+    private class func makeCache() -> URLCache {
+        if #available(iOS 13.0, *) {
+            return URLCache(memoryCapacity: maxMemoryCapacity,
+                            diskCapacity: maxDiskCapacity,
+                            directory: nil)
+            
+        } else {
+            return URLCache(memoryCapacity: maxMemoryCapacity,
+                            diskCapacity: maxDiskCapacity,
+                            diskPath: nil)
+        }
     }
-  }
 }

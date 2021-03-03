@@ -30,6 +30,8 @@
 
     NYPLBook *const book = object;
 
+      // What's the point of checking this? We're not doing anything with the
+      // information here.
     if(!book.defaultAcquisition) {
       // The application is not able to support this, so we ignore it.
       continue;
